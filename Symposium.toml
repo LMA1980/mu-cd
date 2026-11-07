@@ -1,0 +1,14 @@
+name = "mu-cd"
+# Workspace Symposium manifest for mu-cd.
+
+[[plugins]]
+depends-on = ["mu-cd-controller"]
+source.cargo = "mu-cd-controller"
+
+[[plugins]]
+depends-on = ["mu-cd-agent"]
+source.cargo = "mu-cd-agent"
+
+[[plugins]]
+depends-on = ["mu-cd-ipc"]
+source.cargo = "mu-cd-ipc"

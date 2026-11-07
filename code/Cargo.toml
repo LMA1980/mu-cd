@@ -1,0 +1,32 @@
+[workspace]
+resolver = "2"
+members = [
+    "controller",
+    "agent",
+    "ipc",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/LMA1980/mu-cd"
+authors = ["LMA1980"]
+
+[workspace.dependencies]
+mu-cd-controller = { path = "controller", version = "0.1.0" }
+mu-cd-agent = { path = "agent", version = "0.1.0" }
+mu-cd-ipc = { path = "ipc", version = "0.2.0" }
+
+[patch."https://github.com/LMA1980/mu-cd-controller.git"]
+mu-cd-controller = { path = "controller" }
+
+[patch."https://github.com/LMA1980/mu-cd-agent.git"]
+mu-cd-agent = { path = "agent" }
+
+[patch."https://github.com/LMA1980/mu-cd-ipc.git"]
+mu-cd-ipc = { path = "ipc" }
+
+[patch.crates-io]
+mu-cd-controller = { path = "controller" }
+mu-cd-agent = { path = "agent" }
+mu-cd-ipc = { path = "ipc" }
