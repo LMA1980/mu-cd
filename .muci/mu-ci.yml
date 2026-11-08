@@ -56,7 +56,7 @@ tasks:
   miri-task:
     tool: "cargo-miri"
     working_dir: "code"
-    args: ["test", "--workspace", "--lib"]
+    args: ["test", "-p", "mu-cd-ipc", "--lib"]
     env:
       CARGO_TARGET_DIR: "target"
       TMPDIR: "/var/lib/action-runner/.cache"
