@@ -1,0 +1,12 @@
+[submodule "code/controller"]
+	path = code/controller
+	url = https://github.com/LMA1980/mu-cd-controller.git
+	branch = feat/m8-naming-alignment
+[submodule "code/agent"]
+	path = code/agent
+	url = https://github.com/LMA1980/mu-cd-agent.git
+	branch = feat/m8-naming-alignment
+[submodule "code/ipc"]
+	path = code/ipc
+	url = https://github.com/LMA1980/mu-cd-ipc.git
+	branch = feat/m8-naming-alignment
