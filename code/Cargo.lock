@@ -1159,7 +1159,7 @@ dependencies = [
  "async-trait",
  "fory",
  "mu-cd-ipc",
- "mu-observable-ipc",
+ "mu-observable-ipc 0.1.0 (git+https://github.com/LMA1980/mu-observable-ipc.git)",
  "rcgen",
  "rustls",
  "rustls-pki-types",
@@ -1185,7 +1185,7 @@ dependencies = [
  "futures-util",
  "http-body-util",
  "mu-cd-ipc",
- "mu-observable-ipc",
+ "mu-observable-ipc 0.1.0 (git+https://github.com/LMA1980/mu-observable-ipc.git?branch=feat%2Fm8-naming-alignment)",
  "rcgen",
  "reqwest",
  "rustls",
@@ -1222,6 +1222,21 @@ dependencies = [
 name = "mu-observable-ipc"
 version = "0.1.0"
 source = "git+https://github.com/LMA1980/mu-observable-ipc.git?branch=feat%2Fm8-naming-alignment#28793ce66732461cb68c3aef3006154939265abb"
+dependencies = [
+ "arrow",
+ "bytes",
+ "fory",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+ "zerocopy",
+]
+
+[[package]]
+name = "mu-observable-ipc"
+version = "0.1.0"
+source = "git+https://github.com/LMA1980/mu-observable-ipc.git#8ae17bcca3ddbd3566e40f1b364afd487306f80c"
 dependencies = [
  "arrow",
  "bytes",

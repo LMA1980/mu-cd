@@ -1,10 +1,8 @@
 version: "1"
-service: "mu-cd"
+service: "mu-cd-controller"
 
 target_nodes:
   - "node-a"
-  - "node-b"
-  - "worker-riscv64"
 
 lease_ttl_seconds: 300
 warmup_timeout_seconds: 30
@@ -16,10 +14,8 @@ integration_tests: "all"
 deployment:
   target_nodes:
     - "node-a"
-    - "node-b"
-    - "worker-riscv64"
   binary: "mu-cd-controller"
-  install_path: "/srv/mucd/mu-cd-controller/current/bin/mu-cd-controller"
+  install_path: "/usr/local/bin/mu-cd-controller"
   systemd_unit: "mu-cd-controller.service"
 
 verification:
