@@ -7,7 +7,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 repository = "https://github.com/LMA1980/mu-cd"
 authors = ["LMA1980"]
@@ -15,7 +15,7 @@ license = "AGPL-3.0-only"
 
 [workspace.dependencies]
 mu-cd-controller = { path = "controller", version = "0.1.1" }
-mu-cd-agent = { path = "agent", version = "0.1.0" }
+mu-cd-agent = { path = "agent", version = "0.1.1" }
 mu-cd-ipc = { path = "ipc", version = "0.2.1" }
 
 [patch."https://github.com/LMA1980/mu-cd-controller.git"]

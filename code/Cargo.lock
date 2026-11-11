@@ -1154,12 +1154,12 @@ dependencies = [
 
 [[package]]
 name = "mu-cd-agent"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "fory",
  "mu-cd-ipc",
- "mu-observable-ipc 0.1.0 (git+https://github.com/LMA1980/mu-observable-ipc.git)",
+ "mu-observable-ipc",
  "rcgen",
  "rustls",
  "rustls-pki-types",
@@ -1185,7 +1185,7 @@ dependencies = [
  "futures-util",
  "http-body-util",
  "mu-cd-ipc",
- "mu-observable-ipc 0.1.0 (git+https://github.com/LMA1980/mu-observable-ipc.git?branch=main)",
+ "mu-observable-ipc",
  "rcgen",
  "reqwest",
  "rustls",
@@ -1222,21 +1222,6 @@ dependencies = [
 name = "mu-observable-ipc"
 version = "0.1.0"
 source = "git+https://github.com/LMA1980/mu-observable-ipc.git?branch=main#f6755f6aef6d00a6043fe0c842493477ab62aeb4"
-dependencies = [
- "arrow",
- "bytes",
- "fory",
- "serde",
- "serde_json",
- "thiserror 2.0.21",
- "tokio",
- "zerocopy",
-]
-
-[[package]]
-name = "mu-observable-ipc"
-version = "0.1.0"
-source = "git+https://github.com/LMA1980/mu-observable-ipc.git#8ae17bcca3ddbd3566e40f1b364afd487306f80c"
 dependencies = [
  "arrow",
  "bytes",
