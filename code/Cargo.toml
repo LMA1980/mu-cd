@@ -14,7 +14,7 @@ authors = ["LMA1980"]
 license = "AGPL-3.0-only"
 
 [workspace.dependencies]
-mu-cd-controller = { path = "controller", version = "0.1.0" }
+mu-cd-controller = { path = "controller", version = "0.1.1" }
 mu-cd-agent = { path = "agent", version = "0.1.0" }
 mu-cd-ipc = { path = "ipc", version = "0.2.1" }
 
