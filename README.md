@@ -9,7 +9,7 @@
 
 ______________________________________________________________________
 
-Continuous Delivery (CD) platform for the K3 ecosystem orchestrating zero-downtime, autonomous, verified deployments across cluster worker nodes. `mu-cd` coordinates node leases, stages candidate binaries in dedicated Btrfs subvolumes, executes live health and integration gates, and provides sub-second atomic rollback with automated release tainting.
+Continuous Delivery (CD) platform for the K3 ecosystem orchestrating zero-downtime, autonomous, verified deployments across cluster worker nodes. `mu-cd` coordinates node leases, stages candidate binaries and static web bundles in symmetric A/B Btrfs subvolumes (`@a` \<-> `@b` via `<service>/current`), executes sandboxed live health and integration gates, verifies canary SLO bake windows, and performs sub-second atomic rollback with automated release tainting.
 
 See the [A/B Btrfs deployment architecture](docs/adr/ADR-051-mu-cd-ab-btrfs-deployment.md).
 
@@ -17,16 +17,25 @@ ______________________________________________________________________
 
 ## Workspace Submodules
 
-| Submodule                             | Target | License                                       | Responsibility                                                                                           |
-| ------------------------------------- | ------ | --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| [`mu-cd-controller`](code/controller) | native | AGPL-3.0-only                                 | Cluster-wide CD orchestrator, lease management, canary SLO verification, and release tainting            |
-| [`mu-cd-agent`](code/agent)           | native | AGPL-3.0-only                                 | Host-level daemon managing Btrfs `@a`/`@b` slots, atomic symlink swap, systemd restarts, and watchdogs   |
-| [`mu-cd-ipc`](code/ipc)               | native | LGPL-3.0-only WITH LGPL-3.0-linking-exception | Framed mTLS IPC protocol definitions, zero-copy serialization (`fory`/`zerocopy`), and lease RPC schemas |
+| Submodule                             | Target | License                                       | Responsibility                                                                                             |
+| ------------------------------------- | ------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [`mu-cd-controller`](code/controller) | native | AGPL-3.0-only                                 | Cluster-wide CD orchestrator, lease management, canary SLO verification, `/api/cd/*`, and release tainting |
+| [`mu-cd-agent`](code/agent)           | native | AGPL-3.0-only                                 | Host-level daemon managing per-service `@a`/`@b` slots, atomic `current` swap, IT gates, and watchdogs     |
+| [`mu-cd-ipc`](code/ipc)               | native | LGPL-3.0-only WITH LGPL-3.0-linking-exception | Framed mTLS IPC protocol definitions, zero-copy serialization (`fory`/`zerocopy`), and lease RPC schemas   |
+
+## Ecosystem Integrations
+
+- **[`mu-ci-controller`](https://github.com/LMA1980/mu-ci-controller)**: Dispatches post-CI rollouts via `POST /api/cd/deploy` after successful `main`-branch builds.
+- **[`mu-registry`](https://github.com/LMA1980/mu-registry)**: Hosts CAS release artifacts and integration-test (IT) bundles, receiving canary promote/taint updates.
+- **[`mu-observable-hub`](https://github.com/LMA1980/mu-observable-hub)**: Evaluates canary bake window SLO assertions via `MuObserveSloClient` and ingests `MUOB`-framed telemetry emitted via `mu-observable-ipc`.
+- **[`mu-ci-isolation`](https://github.com/LMA1980/mu-ci-isolation)**: Provides `KernelSandbox` isolation for preselected CAS integration-test bundle execution inside `mu-cd-agent`.
+- **[`mu-auth`](https://github.com/LMA1980/mu-auth)**: Enforces `PolicyFolio` RBAC (including `super-operator` and `ab:rollback`, with zero `ab:promote` endpoint) on interactive `/api/cd/*` routes.
+- **[`mu-console`](https://github.com/LMA1980/mu-console)**: Consumes `/api/cd/*` snapshots and SSE streams to visualize active slots, live IT gate progress, and emergency rollbacks.
 
 ## Architecture & Lifecycle
 
 ```text
-[ Idle ]
+[ Idle ]  <── Triggered via POST /api/cd/deploy (mu-ci-controller) or CLI
    │
    ▼
 [ Discover Idle Node ] ──(Active Jobs Running)──> [ Exponential Backoff ]
@@ -35,15 +44,15 @@ ______________________________________________________________________
 [ Acquire TTL Deployment Lease ]
    │
    ▼
-[ Stage Candidate Release (Slot B) ]
+[ Snapshot Active Slot (snapshots/@snap-<digest>) & Stage Candidate in Inactive Slot (@b or @a) ]
    │
    ▼
-[ Atomic Symlink Swap to Slot B ]
+[ Atomic Symlink Swap (<service>/current -> @b or @a) ]
    │
    ▼
-[ Watchdog Probe & Live Integration Test Gate ]
-   ├── All Tests Pass ──> [ Promote Slot B ➔ Slot A ] ──> [ Release Lease ] ──> [ Complete ]
-   └── Failure / Timeout ──> [ Atomic Rollback to Slot A ] ──> [ Taint Artifact in mu-registry ]
+[ Watchdog Probe, KernelSandbox IT Bundle Gate & Canary Bake SLO Gate (mu-observable-hub) ]
+   ├── All Passed ──> [ Commit Symmetric Active Slot (@a <-> @b) & Promote in mu-registry ] ──> [ Complete ]
+   └── Fail / Timeout ──> [ Atomic Rollback (<service>/current -> restore_slot) ] ──> [ Taint in mu-registry ]
 ```
 
 ## Three-Phase Configuration Migration
