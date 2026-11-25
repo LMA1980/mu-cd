@@ -55,13 +55,9 @@ ______________________________________________________________________
    └── Fail / Timeout ──> [ Atomic Rollback (<service>/current -> restore_slot) ] ──> [ Taint in mu-registry ]
 ```
 
-## Three-Phase Configuration Migration
+## Policy Repository Configuration
 
-Continuous delivery deployment specifications adhere to the platform's 3-phase configuration migration policy:
-
-- **Phase 1 (Dual-Stack)**: Side-by-side support for `.mucd/mu-cd.yml` with automatic fallback to legacy `.muconde/MuConDe.yml`.
-- **Phase 2 (Cluster Verification)**: Deploy upgraded daemons across production hosts (`node-a`, `node-b`, `worker-riscv64`) and migrate repository manifests to `.mucd/mu-cd.yml`.
-- **Phase 3 (Decommissioning)**: Remove legacy `.muconde/` fallback code after all services and repositories have migrated.
+Continuous delivery deployment specifications are managed in the central CD policy repository (`MU_CD_DEPLOY_REPO_DIR`) and triggered via digest-only CI release events (`POST /api/cd/deploy`), decoupling service repositories from per-repo `.mucd/` or `.muconde/` manifests.
 
 ## Building & Verification
 
